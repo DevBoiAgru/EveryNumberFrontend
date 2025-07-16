@@ -1,0 +1,35 @@
+:root {
+  --bg-color: #111111;
+  --bg-color-2: #202020;
+  --text-color: #fafafa;
+  --text-secondary: #9a9a9a;
+  --fg-color: #282828;
+  --fg-selected-color: #343434;
+  
+  --button-bg: #232323;
+  --button-hover-bg: #2a2a2a;
+  --button-active-bg: #2d2d2d;
+
+  --scrollbar-color: #9a9a9a; /* Color for the scrollbar thumb */
+  --scrollbar-active: #aeaeae;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0px;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+  height: 100%;
+}
+
+body {
+  /* background-color: var(--bg-color); */
+
+  background-image: radial-gradient(circle at top left, var(--bg-color-2), var(--bg-color));
+  color: var(--text-color);
+  font-family: "Poppins", sans-serif;
+  margin: 0px;
+}
