@@ -36,6 +36,7 @@
                 {num}
                 starred={get(StarredNumbers).has(num)}
                 likeCount={null}
+                onLike={() => {}}
             />
         {/each}
         {#if nums.size == 0}

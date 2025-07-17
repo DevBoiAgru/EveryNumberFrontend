@@ -3,17 +3,35 @@
     import Icon from "@iconify/svelte";
     import { StarredNumbers } from "../lib/Stores";
     import { NUMBER_ROW_HEIGHT, NUMBER_ROW_MARGIN } from "../lib/Constants";
-
-    const LIKE_IMPLEMENTED = false;
+    import { Tween } from "svelte/motion";
+    import { cubicInOut } from "svelte/easing";
+    import { abbrvNumber } from "../lib/Helpers";
 
     let {
         num,
         starred,
         likeCount,
-    }: { num: bigint; starred: boolean; likeCount: string | null } = $props();
+        onLike,
+    }: {
+        num: bigint;
+        starred: boolean;
+        likeCount: number | null;
+        onLike: (num: bigint) => void;
+    } = $props();
 
     let showNumberModal: boolean = $state(false);
     let showClipboardNotif: boolean = $state(false);
+
+    // Likes count rolling animation
+    let animatedLikeCount = new Tween(likeCount, {
+        duration: 500,
+        easing: cubicInOut,
+    });
+
+    // Update animated like count target value everytime likeCount is updated
+    $effect(() => {
+        animatedLikeCount.target = likeCount;
+    });
 
     // Heart floating animation
     interface Heart {
@@ -21,10 +39,15 @@
         x: number;
         y: number;
     }
+
     let hearts: Array<Heart> = $state([]);
     function addHeart(x: number, y: number) {
         const newHeart: Heart = { id: Date.now() + Math.random(), x: x, y: y };
         hearts = [...hearts, newHeart];
+
+        function removeLike(id: number) {
+            hearts = hearts.filter((heart) => heart.id !== id);
+        }
 
         // Auto-remove after 2s (matches animation duration)
         setTimeout(() => {
@@ -32,15 +55,11 @@
         }, 2000);
     }
 
-    function removeLike(id: number) {
-        hearts = hearts.filter((heart) => heart.id !== id);
-    }
-
     // Converting number into string for displaying it with padding
     let bigintAbs = (num: bigint) => (num < 0 ? -1n * num : num); // Helper function
-
     let strNum = bigintAbs(num).toString();
-    let pad = "0".repeat(19 - strNum.length); // Repeat the 0 to create a 37 digit number (2**63 - 1 has 19 digits)
+    // Repeat the 0 to create a 37 digit number (2**63 - 1 has 19 digits)
+    let pad = "0".repeat(19 - strNum.length);
 </script>
 
 <div
@@ -107,7 +126,7 @@
                 />
             {/if}
         </button>
-        {#if likeCount !== null && LIKE_IMPLEMENTED}
+        {#if likeCount !== null}
             <button
                 title="Like this number"
                 class="interact-button"
@@ -116,6 +135,10 @@
                     for (let i = 0; i <= 5; i++) {
                         addHeart(e.clientX, e.clientY);
                     }
+                    if (likeCount != undefined) {
+                        likeCount++;
+                    }
+                    onLike(num);
                 }}
             >
                 <Icon
@@ -124,7 +147,13 @@
                     height="20"
                     color="#f52c2c"
                 />
-                <span class="like-count">{likeCount}</span>
+
+                <!-- Automatically convert number into a readable string if its too long -->
+                <span class="like-count"
+                    >{likeCount < 10_000
+                        ? Math.floor(animatedLikeCount.current!)
+                        : abbrvNumber(likeCount)}</span
+                >
             </button>
         {/if}
     </div>
@@ -132,7 +161,7 @@
 
 {#if showNumberModal}
     <NumberInfo
-        number={num}
+        {num}
         onClose={() => {
             showNumberModal = false;
         }}
@@ -185,6 +214,7 @@
 
     .number {
         display: flex;
+        width: fit-content;
         padding-left: 30px;
         font-family: "JetBrains Mono", monospace;
         user-select: all;
@@ -196,6 +226,10 @@
         color: #f52c2c;
         margin: 0px 10px 0px 2px;
         font-size: 0.9rem;
+        text-align: left;
+
+        /* Reserve space for numbers changing so that it doesnt move stuff around */
+        min-width: 6ch;
     }
 
     .interaction-buttons {
@@ -254,6 +288,7 @@
 
     .heart-anim {
         animation: heartFlyIn 2s ease-out;
+        opacity: 0;
         position: absolute;
         left: var(--x);
         top: var(--y);

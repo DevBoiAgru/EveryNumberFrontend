@@ -2,6 +2,7 @@
 export const MAX_64BIT_INT = (2n ** 63n) - 1n;
 export const MIN_64BIT_INT = -(2n ** 63n);
 export const NUMBER_RANGE = MAX_64BIT_INT - MIN_64BIT_INT
+export const BACKEND_URL = "https://everynumber.vercel.app"
 
 // Styling
 export const NUMBER_ROW_HEIGHT = 48; // height + padding, in px

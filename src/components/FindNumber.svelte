@@ -39,7 +39,9 @@
             }
         }}
     />
-    <button aria-label="Close find" class="close-btn" onclick={onClose}>✖</button>
+    <button aria-label="Close find" class="close-btn" onclick={onClose}
+        >✖</button
+    >
 </div>
 
 <svelte:document
@@ -60,6 +62,7 @@
         max-width: calc(100vw - 25px);
         background-color: rgb(70, 56, 60);
         display: flex;
+        z-index: 4;
     }
 
     .find-input {
@@ -86,5 +89,13 @@
     }
     .close-btn:active {
         background-color: var(--button-active-bg);
+    }
+
+    @media (max-width: 650px) {
+        .find-number {
+            width: 100%;
+            right: 0%;
+            left: 0%;
+        }
     }
 </style>

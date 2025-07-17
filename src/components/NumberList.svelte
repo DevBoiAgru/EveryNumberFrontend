@@ -3,22 +3,83 @@
     import { onMount } from "svelte";
     import { MAX_64BIT_INT, MIN_64BIT_INT } from "../lib/Constants";
     import { NumberIndex, StarredNumbers } from "../lib/Stores";
+    import { SvelteMap } from "svelte/reactivity";
     import { get } from "svelte/store";
-    import { NUMBER_ROW_HEIGHT, NUMBER_ROW_MARGIN } from "../lib/Constants";
+    import {
+        NUMBER_ROW_HEIGHT,
+        NUMBER_ROW_MARGIN,
+        BACKEND_URL,
+    } from "../lib/Constants";
 
     let displayedNumbers: Array<bigint> = $state([]);
+    // let likes = $state(new SvelteMap<bigint, number>());
+    let likesCountMap = new SvelteMap<bigint, number>();
     let currentNumber = $state(0n);
     let dragging = $state(false);
     let limit = $state(0);
-
     let display: HTMLElement;
 
+    // Used for debouncing scroll
+    let timeout: number | undefined = $state();
+    let scrolling: boolean = $state(false);
+
+    function likeNumber(number: bigint) {
+        // Send like to the backend
+        fetch(`${BACKEND_URL}/api/numberlike`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/text",
+            },
+            body: number.toString(),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data: { [key: string]: number }) => {
+                // Clear map so that over time we dont have a whole copy of the db on the browser
+                likesCountMap.clear();
+
+                Object.entries(data).forEach(([number, likeCount]) => {
+                    likesCountMap.set(BigInt(number), likeCount);
+                });
+            });
+    }
+
+    function updateLikesCount(number: bigint) {
+        fetch(`${BACKEND_URL}/api/numberlike?n=${number.toString()}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data: { [key: string]: number }) => {
+                // Clear map so that over time we dont have a whole copy of the db on the browser
+                likesCountMap.clear();
+
+                Object.entries(data).forEach(([number, likeCount]) => {
+                    likesCountMap.set(BigInt(number), likeCount);
+                });
+            });
+    }
+
     function scrollDisplay(delta: bigint) {
+        scrolling = true;
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+            updateLikesCount(currentNumber);
+        }, 1000);
+
         NumberIndex.update((n) => {
             // Bounds check
             let result = n + delta;
 
-            if (result < MIN_64BIT_INT) {
+            if (result <= MIN_64BIT_INT) {
                 currentNumber = MIN_64BIT_INT;
                 return MIN_64BIT_INT;
             } else if (result + BigInt(limit) > MAX_64BIT_INT) {
@@ -29,6 +90,7 @@
                 return result;
             }
         });
+
         // The user scrolled, but where is the scrollbar updating?
         // The answer: It isn't. It would be very very hard to scroll so much that there's
         // even 1px of movement in the scrollbar. If someone manages to do that however,
@@ -109,6 +171,9 @@
         display.addEventListener("touchmove", onSwipe, { passive: false });
         display.addEventListener("touchstart", onTouchStart);
         display.addEventListener("touchend", onTouchEnd);
+
+        // Initialise number of likes in the beginning
+        updateLikesCount(currentNumber);
         return () => {
             display.removeEventListener("wheel", onScroll);
             display.removeEventListener("touchmove", onSwipe);
@@ -123,10 +188,33 @@
         <NumberRow
             {num}
             starred={get(StarredNumbers).has(num)}
-            likeCount={"143.5k"}
+            likeCount={likesCountMap.get(num) ?? 0}
+            onLike={likeNumber}
         />
     {/each}
 </div>
+
+<svelte:document
+    onkeydown={(e: KeyboardEvent) => {
+        // Hotkeys
+        switch (e.key) {
+            case "ArrowUp":
+                scrollDisplay(-1n);
+                break;
+            case "ArrowDown":
+                scrollDisplay(1n);
+                break;
+            case "PageUp":
+                scrollDisplay(BigInt(limit) * -1n - 1n);
+                break;
+            case "PageDown":
+                scrollDisplay(BigInt(limit) + 1n);
+                break;
+            default:
+                break;
+        }
+    }}
+/>
 
 <style>
     #num-display {

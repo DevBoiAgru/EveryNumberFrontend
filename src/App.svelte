@@ -6,9 +6,9 @@
     import StarredList from "./components/StarredList.svelte";
     import Navbar from "./components/Navbar.svelte";
     import {
+        MIN_64BIT_INT,
         NUMBER_ROW_HEIGHT,
         NUMBER_ROW_MARGIN,
-        SCROLLBAR_WIDTH,
     } from "./lib/Constants";
     import { NumberIndex } from "./lib/Stores";
     import { MAX_64BIT_INT } from "./lib/Constants";
@@ -65,6 +65,12 @@
 
     // Helper function to map the scrollbar 0-1 value to big numbers
     function mapNumberToSigned64Bit(value: number) {
+        if (value == 0) {
+            return MIN_64BIT_INT;
+        }
+        // This method has a limitation that it does
+        // not return the minimum 64 bit integer on
+        // inputting 0, hence the special if check.
         const SCALE = BigInt(1_000_000);
         const t = BigInt(Math.round(value * 1_000_000));
         const numerator = (2n * t - SCALE) * MAX_64BIT_INT;
@@ -72,7 +78,7 @@
         return interpolated;
     }
 
-    function scrollTo(num: bigint) {
+    function scrollToNumber(num: bigint) {
         NumberIndex.update(() => {
             // Bounds check
             if (num > MAX_64BIT_INT - BigInt(limit)) {
@@ -84,8 +90,8 @@
     }
 
     function onScrollbarChange(fraction: number) {
-        let res = mapNumberToSigned64Bit(fraction) - 1n; // frickin off by one
-        scrollTo(res);
+        let res = mapNumberToSigned64Bit(fraction);
+        scrollToNumber(res);
     }
 </script>
 
@@ -154,7 +160,7 @@
         }}
         onInputChange={(num) => {
             if (num !== null) {
-                scrollTo(num - 1n);
+                scrollToNumber(num - 1n);
             }
         }}
     />
@@ -291,6 +297,9 @@
         }
         .header {
             width: 100%;
+        }
+        .disclaimer {
+            display: none;
         }
     }
 </style>
