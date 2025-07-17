@@ -72,6 +72,7 @@
             clearTimeout(timeout);
         }
         timeout = setTimeout(() => {
+            scrolling = false;
             updateLikesCount(currentNumber);
         }, 1000);
 
@@ -117,6 +118,12 @@
 
                 displayedNumbers.push(i + currentNumber);
             }
+
+            setInterval(() => {
+                if (!scrolling) {
+                    updateLikesCount(currentNumber);
+                }
+            }, 5000);
         }
 
         new ResizeObserver(screenResized).observe(display);
