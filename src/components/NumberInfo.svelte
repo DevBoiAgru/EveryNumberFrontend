@@ -196,6 +196,7 @@
         margin-right: 10px;
     }
     .property-value {
+        user-select: all;
         word-break: break-word;
         overflow-wrap: anywhere;
     }
