@@ -123,7 +123,7 @@
                 if (!scrolling) {
                     updateLikesCount(currentNumber);
                 }
-            }, 5000);
+            }, 15000);
         }
 
         new ResizeObserver(screenResized).observe(display);
