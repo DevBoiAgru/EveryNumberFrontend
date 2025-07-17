@@ -4,6 +4,8 @@
     import { StarredNumbers } from "../lib/Stores";
     import { NUMBER_ROW_HEIGHT, NUMBER_ROW_MARGIN } from "../lib/Constants";
 
+    const LIKE_IMPLEMENTED = false;
+
     let {
         num,
         starred,
@@ -105,20 +107,25 @@
                 />
             {/if}
         </button>
-        {#if likeCount !== null}
-        <button
-            title="Like this number"
-            class="interact-button"
-            onclick={(e) => {
-                e.stopPropagation();
-                for (let i = 0; i <= 5; i++) {
-                    addHeart(e.clientX, e.clientY);
-                }
-            }}
-        >
-            <Icon icon="tabler:heart" width="20" height="20" color="#f52c2c" />
-            <span class="like-count">{likeCount}</span>
-        </button>
+        {#if likeCount !== null && LIKE_IMPLEMENTED}
+            <button
+                title="Like this number"
+                class="interact-button"
+                onclick={(e) => {
+                    e.stopPropagation();
+                    for (let i = 0; i <= 5; i++) {
+                        addHeart(e.clientX, e.clientY);
+                    }
+                }}
+            >
+                <Icon
+                    icon="tabler:heart"
+                    width="20"
+                    height="20"
+                    color="#f52c2c"
+                />
+                <span class="like-count">{likeCount}</span>
+            </button>
         {/if}
     </div>
 </div>
@@ -140,7 +147,8 @@
 {#each hearts as heart (heart.id)}
     <div
         class="heart-anim"
-        style="--x: {heart.x + (Math.random() - 0.5) * 2 * 20}px; --y: {heart.y +
+        style="--x: {heart.x +
+            (Math.random() - 0.5) * 2 * 20}px; --y: {heart.y +
             (Math.random() - 0.5) * 2 * 20}px; --rot: {Math.random() *
             360}deg; --size: {Math.random() * 1.5}"
     >

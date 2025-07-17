@@ -16,8 +16,10 @@
     aria-hidden="false"
 >
     <h1 style="margin-top: 3rem;">STARRED NUMBERS</h1>
-    <button aria-label="Close starred numbers" class="close-btn" onclick={onClose}
-        >✖</button
+    <button
+        aria-label="Close starred numbers"
+        class="close-btn"
+        onclick={onClose}>✖</button
     >
     <div
         id="display"
@@ -110,10 +112,7 @@
     @media (max-width: 650px) {
         #display {
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
             flex: 0.95 1 0%;
-            min-height: 0px;
             width: 98%;
         }
     }

@@ -4,6 +4,7 @@
     import Scrollbar from "./components/Scrollbar.svelte";
     import FindNumber from "./components/FindNumber.svelte";
     import StarredList from "./components/StarredList.svelte";
+    import Navbar from "./components/Navbar.svelte";
     import {
         NUMBER_ROW_HEIGHT,
         NUMBER_ROW_MARGIN,
@@ -12,11 +13,13 @@
     import { NumberIndex } from "./lib/Stores";
     import { MAX_64BIT_INT } from "./lib/Constants";
     import { StarredNumbers } from "./lib/Stores";
+    import About from "./components/About.svelte";
 
     let limit = $state(0);
     let displayHeight = $state(0);
     let isFirstRun = $state(true);
     let findOn = $state(false);
+    let showAbout = $state(false);
     let showStarred = $state(false);
 
     // Save starred numbers to localstorage when it changes
@@ -87,9 +90,11 @@
 </script>
 
 <main>
-    <nav class="navbar" style="--scrollbar-width: {SCROLLBAR_WIDTH}px">
-        insert logo etc here.
-    </nav>
+    <Navbar
+        onClickAbout={() => {
+            showAbout = !showAbout;
+        }}
+    />
     <div class="app-wrapper">
         <!-- Main app -->
         <div class="main-app">
@@ -128,6 +133,15 @@
         <StarredList
             onClose={() => {
                 showStarred = false;
+            }}
+        />
+    {/if}
+
+    <!-- About section -->
+    {#if showAbout}
+        <About
+            onClose={() => {
+                showAbout = false;
             }}
         />
     {/if}
@@ -218,11 +232,7 @@
         margin: 5px 0px 5px 0px;
         text-align: left;
     }
-    .navbar {
-        display: flex;
-        position: absolute;
-        width: calc(100% - var(--scrollbar-width));
-    }
+
     .nerd-title {
         margin-left: 2px;
         margin-right: 10px;
@@ -235,7 +245,7 @@
     }
 
     .normie-title {
-        transition: all 0.3s ease-in-out;
+        transition: all 0.3s 0.1s ease-in-out;
         max-width: 250px;
         overflow: hidden;
     }
@@ -278,6 +288,9 @@
         .tagline-text {
             text-align: left;
             margin: 5px 5px 5px 5px;
+        }
+        .header {
+            width: 100%;
         }
     }
 </style>
