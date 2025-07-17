@@ -142,7 +142,9 @@
                 <li>
                     <span class="property-name">Hexadecimal: </span><span
                         class="property-value"
-                        >{num < 0 ? "-" : ""}0x{numAbs.toString(16)}</span
+                        >{num < 0 ? "-" : ""}0x{numAbs
+                            .toString(16)
+                            .toUpperCase()}</span
                     >
                 </li>
             </ul>
