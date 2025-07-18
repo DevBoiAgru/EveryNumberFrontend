@@ -13,3 +13,7 @@ export function abbrvNumber(num: number) {
         return `${(num / 1_000_000_000).toFixed(2)}B`;
     }
 }
+
+export function clamp(num: number, low: number, high: number) {
+    return Math.min(Math.max(num, low), high)
+}

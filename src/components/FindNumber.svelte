@@ -22,6 +22,7 @@
     aria-hidden="false"
 >
     <input
+        id="find-input-box"
         type="text"
         class="find-input"
         placeholder="Search for a number..."
@@ -96,6 +97,9 @@
             width: 100%;
             right: 0%;
             left: 0%;
+        }
+        .find-input {
+            width: 100%;
         }
     }
 </style>
