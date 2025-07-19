@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { SCROLLBAR_WIDTH } from "../lib/Constants";
+    import { SCROLLBAR_WIDTH } from "../lib/Constants.svelte";
     import Icon from "@iconify/svelte";
 
     let { onClose }: { onClose: () => void } = $props();

@@ -2,7 +2,7 @@
     import { StarredNumbers } from "../lib/Stores";
     import { get } from "svelte/store";
     import NumberRow from "./NumberRow.svelte";
-    import { SCROLLBAR_WIDTH } from "../lib/Constants";
+    import { SCROLLBAR_WIDTH } from "../lib/Constants.svelte";
 
     let { onClose }: { onClose: () => void } = $props();
     let nums: Set<bigint> = get(StarredNumbers);

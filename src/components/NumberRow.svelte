@@ -2,7 +2,11 @@
     import NumberInfo from "./NumberInfo.svelte";
     import Icon from "@iconify/svelte";
     import { StarredNumbers } from "../lib/Stores";
-    import { NUMBER_ROW_HEIGHT, NUMBER_ROW_MARGIN } from "../lib/Constants";
+    import {
+        NUMBER_ROW_HEIGHT,
+        NUMBER_ROW_MARGIN,
+        GetNumbersSignedness,
+    } from "../lib/Constants.svelte";
     import { Tween } from "svelte/motion";
     import { cubicInOut } from "svelte/easing";
     import { abbrvNumber } from "../lib/Helpers";
@@ -59,7 +63,9 @@
     let bigintAbs = (num: bigint) => (num < 0 ? -1n * num : num); // Helper function
     let strNum = bigintAbs(num).toString();
     // Repeat the 0 to create a 37 digit number (2**63 - 1 has 19 digits)
-    let pad = "0".repeat(19 - strNum.length);
+    let pad = "0".repeat(
+        GetNumbersSignedness() ? 19 - strNum.length : 20 - strNum.length,
+    );
 </script>
 
 <div

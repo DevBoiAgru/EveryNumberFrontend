@@ -4,7 +4,8 @@
         SCROLLBAR_WIDTH,
         SCROLLBAR_THUMB_HEIGHT,
         BUTTON_SCROLL_AMOUNT,
-    } from "../lib/Constants";
+        GetNumbersSignedness,
+    } from "../lib/Constants.svelte";
     import Icon from "@iconify/svelte";
 
     let fraction = $state(0.5); // 0-1, how much we have scrolled
@@ -20,7 +21,7 @@
     onMount(() => {
         function bodyResized() {
             if (!scrollbarTrack) {
-                return
+                return;
             }
             let trackRect = scrollbarTrack.getBoundingClientRect();
             maxTravel = trackRect.bottom - 2 * SCROLLBAR_THUMB_HEIGHT;
@@ -33,10 +34,12 @@
     });
 
     $effect(() => {
-        if (fraction < 0 || fraction > 1){
-            console.error("Scrollbar fraction is out of bounds (0 to 1)! Please reset.")
+        if (fraction < 0 || fraction > 1) {
+            console.error(
+                "Scrollbar fraction is out of bounds (0 to 1)! Please reset.",
+            );
         }
-        
+
         // Update position whenever the fraction changes
         position = maxTravel * fraction;
 
@@ -67,8 +70,9 @@
             return; // User clicked the thumb, dont do anything
         }
         let trackRect = scrollbarTrack.getBoundingClientRect();
-        let clickedPos = (e.clientY - trackRect.top) / (trackRect.bottom - trackRect.top);
-        
+        let clickedPos =
+            (e.clientY - trackRect.top) / (trackRect.bottom - trackRect.top);
+
         fraction = Math.min(Math.max(clickedPos, 0), 1);
     }
 </script>
@@ -86,7 +90,12 @@
             color="#9a9a9a"
         /></button
     >
-    <div class="track" bind:this={scrollbarTrack} onclick={onClickTrack} role="presentation">
+    <div
+        class="track"
+        bind:this={scrollbarTrack}
+        onclick={onClickTrack}
+        role="presentation"
+    >
         <div
             class="thumb"
             bind:this={scrollbarThumb}

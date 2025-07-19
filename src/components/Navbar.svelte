@@ -1,6 +1,6 @@
 <script lang="ts">
     import Logo from "../public/Logo.svelte";
-    import { SCROLLBAR_WIDTH } from "../lib/Constants";
+    import { SCROLLBAR_WIDTH } from "../lib/Constants.svelte";
     import Icon from "@iconify/svelte";
 
     let { onClickAbout }: { onClickAbout: () => void } = $props();

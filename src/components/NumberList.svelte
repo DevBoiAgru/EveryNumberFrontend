@@ -1,6 +1,6 @@
 <script lang="ts">
     import NumberRow from "./NumberRow.svelte";
-    import { StarredNumbers } from "../lib/Stores";
+    import { LikesMap, StarredNumbers } from "../lib/Stores";
     import { SvelteMap } from "svelte/reactivity";
     import { get } from "svelte/store";
 
@@ -8,12 +8,21 @@
         currentNumber,
         limit,
         onLike,
-    }: { currentNumber: bigint; limit: number; onLike: (num: bigint) => void } =
-        $props();
+    }: {
+        currentNumber: bigint;
+        limit: number;
+        onLike: (num: bigint) => void;
+    } = $props();
+
+    // Number of likes for each number on the screen
+    let likesCountMap = $state(new SvelteMap<bigint, number>());
+
+    LikesMap.subscribe((val) => {
+        likesCountMap = val;
+    });
 
     let display: HTMLElement;
 
-    let likesCountMap = new SvelteMap<bigint, number>();
     let displayedNumbers = $derived.by(() => {
         const nums: bigint[] = [];
 
