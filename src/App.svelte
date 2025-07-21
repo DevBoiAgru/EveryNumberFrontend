@@ -212,7 +212,7 @@
     }
 
     // Swiping and scrolling
-    function scrollDisplay(delta: bigint) {
+    function scrollDisplayBy(delta: bigint) {
         scrolling = true;
         if (timeout) {
             clearTimeout(timeout);
@@ -264,12 +264,12 @@
             let scrollAmount = BigInt(
                 Math.floor(clamp(touchDelta * 2, -10, 10)), // Prevent overscrolling by clamping the delta
             );
-            scrollDisplay(scrollAmount);
+            scrollDisplayBy(scrollAmount);
         }
         lastTouchY = touchY;
     }
     function onScroll(e: WheelEvent) {
-        scrollDisplay(BigInt(Math.floor(e.deltaY)));
+        scrollDisplayBy(BigInt(Math.floor(e.deltaY)));
     }
 </script>
 
@@ -375,7 +375,7 @@
     />
 
     <div class="disclaimer">
-        *Every number here refers to every signed 64-bit integer
+        *Every number here refers to every 64-bit integer
     </div>
 </main>
 
@@ -388,16 +388,16 @@
         // Hotkeys
         switch (e.key) {
             case "ArrowUp":
-                scrollDisplay(-1n);
+                scrollDisplayBy(-1n);
                 break;
             case "ArrowDown":
-                scrollDisplay(1n);
+                scrollDisplayBy(1n);
                 break;
             case "PageUp":
-                scrollDisplay(BigInt(numbersShown) * -1n - 1n);
+                scrollDisplayBy(BigInt(numbersShown) * -1n - 1n);
                 break;
             case "PageDown":
-                scrollDisplay(BigInt(numbersShown) + 1n);
+                scrollDisplayBy(BigInt(numbersShown) + 1n);
                 break;
             default:
                 break;

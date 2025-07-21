@@ -29,6 +29,10 @@
         oninput={(e: any) => {
             let strNum: string = e.target.value;
             try {
+                if (strNum === "") {
+                    // Prevent scrolling to zero for an empty string.
+                    return;
+                }
                 onInputChange(BigInt(strNum));
             } catch (e) {
                 if (e instanceof SyntaxError) {

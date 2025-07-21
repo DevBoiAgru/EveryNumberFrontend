@@ -12,13 +12,13 @@ export function SetNumberSignedness(newSignedness: boolean) {
 export const LIMITS = {
     get VALUES() {
         return {
-            MAX: signed ? (2n ** 63n) - 1n : 18_446_744_073_709_551_615n,
+            MAX: signed ? (2n ** 63n) - 1n : (2n ** 64n) - 1n,
             MIN: signed ? -(2n ** 63n) : 0n,
         }
     }
 }
 
-export const BACKEND_URL = "https://everynumber.vercel.app"
+export const BACKEND_URL = "http://localhost:8000"
 
 // Styling
 export const NUMBER_ROW_HEIGHT = 48; // height + padding, in px

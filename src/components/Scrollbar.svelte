@@ -56,7 +56,7 @@
         }
     }
 
-    function drag(e: MouseEvent) {
+    function drag(e: PointerEvent) {
         if (dragging) {
             fraction =
                 Math.min(Math.max(0, position + e.movementY), maxTravel) /
@@ -72,7 +72,7 @@
         let trackRect = scrollbarTrack.getBoundingClientRect();
         let clickedPos =
             (e.clientY - trackRect.top) / (trackRect.bottom - trackRect.top);
-
+        console.log(clickedPos)
         fraction = Math.min(Math.max(clickedPos, 0), 1);
     }
 </script>
