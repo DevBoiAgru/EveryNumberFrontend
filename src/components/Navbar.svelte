@@ -11,6 +11,18 @@
     <p class="title-name">DevBoiAgru</p>
     <div class="horizontal-spacer"></div>
 
+    <button
+        class="icon-btn"
+        onclick={() => {
+            window.open(
+                "https://devboiagru.vercel.app/blogs/every_number_site",
+                "_blank",
+            );
+        }}
+    >
+        <Icon icon="tabler:pencil" width="30" height="30" />
+    </button>
+
     <button class="icon-btn" onclick={onClickAbout}>
         <Icon icon="tabler:question-mark" width="30" height="30" />
     </button>
